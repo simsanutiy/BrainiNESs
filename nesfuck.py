@@ -1,4 +1,5 @@
-import argparse
+import argparse #Модуль парсинга аргументов командной строки
+import headfoot #Начало и конец вывода на C вынесен в другой файл
 
 def input_parse():
     """Парсим аргументы из командной строки"""
@@ -9,9 +10,8 @@ def input_parse():
 
     """Раскидываем аргументы по переменным"""
     inp = args.source_file_name.read()
-    global output
     output = args.output_file_name
-    return inp
+    return (inp, output)
 
 def bf_parse(inp):
     """Убираем лишние символы и комментарии"""
@@ -28,7 +28,7 @@ def bf_parse(inp):
 
 def c_process(code):
     """Переводим это говно в C"""
-    output.write(header)
+    output.write(headfoot.header)
     tab = 1
     order = 0
     print(code)
@@ -85,50 +85,14 @@ def c_process(code):
             order += 1
 
         if code[order] == '}':
-            output.write(footer)
+            output.write(headfoot.footer)
             order += 1
             
         #order += 1
 
-header = """#define PPU_CTRL		*((unsigned char*)0x2000)
-#define PPU_MASK		*((unsigned char*)0x2001)
-#define PPU_STATUS		*((unsigned char*)0x2002)
-#define SCROLL			*((unsigned char*)0x2005)
-#define PPU_ADDRESS		*((unsigned char*)0x2006)
-#define PPU_DATA		*((unsigned char*)0x2007)
 
-unsigned char a[512];
-unsigned char a_pointer = 0;
-unsigned char index;
-const unsigned char PALETTE[]={
-0x1f, 0x00, 0x10, 0x20
-}; //	black, gray, lt gray, white
 
-void main (void) {
-		//	turn off the screen
-	PPU_CTRL = 0;
-	PPU_MASK = 0;
-	
-	//	load the palette
-	PPU_ADDRESS = 0x3f; 	//	set an address in the PPU of 0x3f00
-	PPU_ADDRESS = 0x00;
-"""
-
-footer = """
-//	reset the scroll position	
-	PPU_ADDRESS = 0;
-	PPU_ADDRESS = 0;
-	SCROLL = 0;
-	SCROLL = 0;
-	
-	//	turn on screen
-	PPU_CTRL = 0x90; 	//	screen is on, NMI on
-	PPU_MASK = 0x1e;
-	
-	//	infinite loop
-	while (1);
-}"""
-
-c_process(bf_parse(input_parse()))
+inp, output = input_parse()
+c_process(bf_parse(inp))
 #output.write('#' + code)
 output.close
