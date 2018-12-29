@@ -3,26 +3,26 @@ import headfoot #Начало и конец вывода на C вынесен �
 
 def input_parse():
     """Парсим аргументы из командной строки"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument('source_file_name', type=open)
-    parser.add_argument('output_file_name', type=argparse.FileType('w'))
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser()  #Создаём парсер
+    parser.add_argument('source_file_name', type=open)  #Аргументы: входной файл
+    parser.add_argument('output_file_name', type=argparse.FileType('w'))#И выходной
+    args = parser.parse_args()  #И парсим
 
     """Раскидываем аргументы по переменным"""
-    inp = args.source_file_name.read()
-    output = args.output_file_name
+    inp = args.source_file_name.read()  #Входной файл строкой
+    output = args.output_file_name  #И имя ывходного файла
     return (inp, output)
 
 def bf_parse(inp):
     """Убираем лишние символы и комментарии"""
-    code = ''
-    comm_flag = 0
+    code = ''   #Берём пустую строку
+    comm_flag = 0   #А это флаг комментария
     for sym in inp:
-        if sym == '#': comm_flag = 1
-        if sym == '\n': comm_flag = 0
-        if comm_flag == 0:
-            if sym in '><+-.,[]':
-                code += sym
+        if sym == '#': comm_flag = 1    #Дальше коммент
+        if sym == '\n': comm_flag = 0   #Коммент кончился
+        if comm_flag == 0:  #Если это не коммент
+            if sym in '><+-.,[]':   #И это символ брейнфака
+                code += sym #То добавляем этот символ в строку
     code += '}'
     return code
 
@@ -31,18 +31,14 @@ def c_process(code):
     output.write(headfoot.header)
     tab = 1
     order = 0
-    print(code)
     while order < len(code):
-        #print(code[order])
 
         if code[order] == '+':
             sum = 0
             while code[order] == '+':
-                print(order)
                 sum += 1
                 order += 1
             output.write('\t'*tab+'a[a_pointer]=a[a_pointer]+'+str(sum)+';\n')
-            #print(sum, ' ', order, code[order])
 
         if code[order] == '-':
             sum = 0
@@ -94,5 +90,4 @@ def c_process(code):
 
 inp, output = input_parse()
 c_process(bf_parse(inp))
-#output.write('#' + code)
 output.close
