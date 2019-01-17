@@ -19,8 +19,8 @@ def bf_parse(inp):
     comm_flag = 0   #А это флаг комментария
     for sym in inp:
         if sym == '#': comm_flag = 1    #Дальше коммент
-        if sym == '\n': comm_flag = 0   #Коммент кончился
-        if comm_flag == 0:  #Если это не коммент
+        elif sym == '\n': comm_flag = 0   #Коммент кончился
+        elif comm_flag == 0:  #Если это не коммент
             if sym in '><+-.,[]':   #И это символ брейнфака
                 code += sym #То добавляем этот символ в строку
     code += '}'
@@ -40,21 +40,21 @@ def c_process(code):
                 order += 1
             output.write('\t'*tab+'a[a_pointer]=a[a_pointer]+'+str(sum)+';\n')
 
-        if code[order] == '-':
+        elif code[order] == '-':
             sum = 0
             while code[order] == '-':
                 sum += 1
                 order += 1
             output.write('\t'*tab+'a[a_pointer]=a[a_pointer]-'+str(sum)+';\n')
 
-        if code[order] == '>':
+        elif code[order] == '>':
             sum = 0
             while code[order] == '>':
                 sum += 1
                 order += 1
             output.write('\t'*tab+'a_pointer=a_pointer+'+str(sum)+';\n')
 
-        if code[order] == '<':
+        elif code[order] == '<':
             sum = 0
             while code[order] == '<':
                 sum += 1
@@ -62,25 +62,25 @@ def c_process(code):
                 if order >= len(code): break
             output.write('\t'*tab+'a_pointer=a_pointer-'+str(sum)+';\n')
 
-        if code[order] == '[':
+        elif code[order] == '[':
             output.write('\t' * tab + 'while (a[a_pointer] != 0) {\n')
             tab += 1
             order += 1
 
-        if code[order] == ']':
+        elif code[order] == ']':
             tab -= 1
             output.write('\t' * tab + '}\n')
             order += 1
 
-        if code[order] == '.':
+        elif code[order] == '.':
             output.write('\t' * tab + 'PPU_DATA = a[a_pointer];\n')
             order += 1
 
-        if code[order] == ',':
+        elif code[order] == ',':
             output.write('#\n')
             order += 1
 
-        if code[order] == '}':
+        elif code[order] == '}':
             output.write(headfoot.footer)
             order += 1
             
