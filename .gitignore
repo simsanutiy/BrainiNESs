@@ -3,3 +3,4 @@
 *.o
 *.s
 *.txt
+__pycache__/
